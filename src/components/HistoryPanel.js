@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './historyPanel.css';
+import './HistoryPanel.css';
 
 function HistoryPanel({ username }) {
   const [isOpen, setIsOpen] = useState(false);
