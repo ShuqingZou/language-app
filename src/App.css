@@ -1,43 +1,116 @@
-.App{
+.app {
+    background-color: #333;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .response-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+  }
+  
+  .response {
+    font-size: 36px;
     text-align: center;
-    margin-top: 50px;
-}
-
-input{
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/*
-.chat-bubble{
-    display: inline-block;
-    background-color: #f1f1f1;
-    border-radius: 15px;
-    padding: 10px;
-    margin-bottom: 10px;
     word-wrap: break-word;
-    max-width: 70%;
-    margin-left: auto;
-}
-
- */
-
-/*
-button{
-    padding: 5px 15px;
-    background-color: #4CAF50;
-    color: white;
+  }
+  
+  .highlight {
+    color: rgb(218, 75, 149);
+  }
+  
+  .form-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .text-input {
+    background: none;
     border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
+    border-bottom: 1px solid #aaa; /* light underline */
+    color: #fff;
+    font-size: 24px;
+    width: 300px;
+    margin: 0 10px;
+    outline: none;
     text-align: center;
+  }
+
+  .username-container {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-}
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
 
- */
+  .username-input {
+    background: none;
+    border: none;
+    color: #b7b7b7;
+    font-size: 72px;
+    padding: 10px;
+    width: 80%;
+    max-width: 1000px;
+    margin: 0 10px;
+    outline: none;
+    text-align: center;
+  }
+  
+  .minus-button,
+  .plus-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .minus-button:disabled {
+    color: #555;
+    cursor: not-allowed;
+  }
+  
+  .submit-button {
+    background-color: #333;
+    color: rgb(180, 180, 180);
+    border: none;
+    padding: 6px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
 
-button:hover{
-    background-color: #45a049;
-}
+  .submit-button:hover {
+      background-color: #555;
+      transform: translateY(-1px);
+  }
+
+  .submit-button:active {
+      background-color: #373737;
+      transform: translateY(0);
+  }

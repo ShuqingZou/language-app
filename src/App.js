@@ -1,95 +1,132 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import HistoryPanel from './components/HistoryPanel';
 import './App.css';
 
 function App() {
-    const [inputs, setInputs] = useState([1]);
-    const [messages, setMessages] = useState([]);
-    const addIput = () =>{
-        if(inputs.length < 4){
-            setInputs([...inputs, inputs.length + 1]);
-        }
-    };
+  const [inputs, setInputs] = useState(['']);
+  const [response, setResponse] = useState(null);
+  const [username, setUsername] = useState('username');
 
-    const handleConfirm = () => {
-        const inputValues = Array.from(document.querySelectorAll('input')).map(input => input.value.trim());
-        const hasContent = inputValues.some(value => value !== '');
-        if(hasContent){
-            setMessages([...messages, inputValues.filter(value => value !== '').join(', ')]);
-        }
-    };
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
-    return (
-        <div className="App" style={{ position: 'relative', height: '100vh' }}>
-
-            <div style = {{ padding: '20px', minHeight: '60vh'}}>
-                {messages.map((message, index) => (
-                    <div key={index} style={{
-                        backgroundColor: '#f1f1f1',
-                        borderRadius: '15px',
-                        padding: '10px',
-                        marginBottom: '10px',
-                        width: 'fit-content',
-                        maxWidth: '70%',
-                        wordWrap: 'break-word',
-                        marginLeft: 'auto',
-                    }}>
-                        {message}
-                    </div>
-                ))}
-            </div>
-
-            <div style = {{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: '#333',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                borderTopLeftRadius: '20px',
-                borderTopRightRadius: '20px',
-            }}>
-                <h4 style = {{
-                    color: 'white'
-                }}>Please enter here</h4>
-
-                <div style = {{ display: 'flex', justifyContent: 'center', gap: '10px'}}>
-                    {inputs.map((input, i) =>(
-                        <div key={i} style={{ margin: '10px 0', display: 'flex', alignItems: 'center' }}>
-                            <input type="text" placeholder={`Word ${i+1}`}/>
-                        </div>
-                    ))}
-                </div>
-
-            {inputs.length < 4 && (
-                <button onClick={addIput} style={{
-                    marginleft: '10px',
-                    padding: '10px 20px',
-                    backgroundColor: '#4CAF50',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                }}>
-                    + Add Input
-                </button>
-            )}
-
-            <button onClick={handleConfirm} style={{
-                padding: '10px 20px',
-                backgroundColor: '#007BFF',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                marginTop: '10px',
-            }}>
-                Confirm
-            </button>
-        </div>
-        </div>
+  const highlightWords = (result, words = []) => {
+    if (!result) return result;
+    
+    // escape regex
+    const escapedWords = words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const regex = new RegExp(`(${escapedWords.join('|')})`, 'gi');
+    console.log(regex)
+    const parts = result.split(regex);
+    
+    // highlight only key words
+    return parts.map((part, index) =>
+      words.includes(part) ? (
+        <span key={index} className="highlight">{part}</span>
+      ) : (
+        <span key={index}>{part}</span>
+      )
     );
+  };
+
+  const handleInputChange = (index, event) => {
+    const values = [...inputs];
+    values[index] = event.target.value;
+    setInputs(values);
+  };
+
+  const handleAddInput = () => {
+    setInputs([...inputs, '']);
+  };
+
+  const handleRemoveInput = (index) => {
+    if (inputs.length > 1) {
+      const values = [...inputs];
+      values.splice(index, 1);
+      setInputs(values);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setResponse(null);
+
+    const data = {
+      username: username,
+      words: inputs,
+    };
+
+    try {
+      // post request
+      const result = await axios.post(`${apiUrl}/generateSentence`, data);
+
+      // set response
+      setResponse(result.data);
+
+      // clear inputs
+      setInputs(['']);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <div className="app">
+
+      <div className="username-container">
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="username-input"
+        />
+      </div>
+
+      <div>
+        <HistoryPanel username={username} />
+      </div>
+
+      {/* display results */}
+      <div className="response-container">
+        {response && response.result && (
+          <div className="response">
+            {highlightWords(response.result, response.words)}
+          </div>
+        )}
+      </div>
+
+      {/* inputs */}
+      <div className="form-container">
+        <form onSubmit={handleSubmit} className="form">
+          {/* render inputs */}
+          {inputs.map((input, index) => (
+            <div key={index} className="input-group">
+              <button
+                type="button"
+                onClick={() => handleRemoveInput(index)}
+                className="minus-button"
+                disabled={inputs.length <= 1}
+              >
+                -
+              </button>
+              <input
+                type="text"
+                value={input}
+                onChange={(event) => handleInputChange(index, event)}
+                className="text-input"
+              />
+              <button type="button" onClick={handleAddInput} className="plus-button">
+                +
+              </button>
+            </div>
+          ))}
+          <button type="submit" className="submit-button">
+            submit
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default App;
