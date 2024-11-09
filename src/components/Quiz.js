@@ -152,8 +152,8 @@ const Quiz = () => {
           ))}
         </div>
         <div className="collection-buttons">
-          <button onClick={handleAddToCollection}>Add to Collection</button>
-          <button onClick={handleExportCollection}>Export Collection</button>
+          <button onClick={handleAddToCollection} className="collection-button">Add to Collection</button>
+          <button onClick={handleExportCollection} className="collection-button">Export Collection</button>
         </div>
         <div className="score">
           {quiz.correctAnswers} / {quiz.totalAnswers}

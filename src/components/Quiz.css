@@ -146,12 +146,28 @@
 .collection-buttons {
     margin-top: 20px;
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
 }
 
-.collection-buttons button {
+.collection-button {
+    background-color: #333;
+    color: #b4b4b4;
+    border: none;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.collection-button:hover {
+    background-color: #555;
+    transform: translateY(-1px);
+}
+
+.collection-button:active {
+    background-color: #373737;
+    transform: translateY(0);
 }
