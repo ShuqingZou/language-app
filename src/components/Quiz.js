@@ -9,6 +9,7 @@ const Quiz = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
+  const [savedQuestions, setSavedQuestions] = useState([]);
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/quiz';
 
@@ -27,11 +28,11 @@ const Quiz = () => {
       const data = { username };
       const response = await axios.post(apiUrl + '/getQuiz', data);
       const quizData = response.data;
-      
+
       if (quizData.answers && quizData.answers.length > 0) {
         quizData.answers = shuffleArray(quizData.answers);
       }
-      
+
       setQuiz(quizData);
       setSelectedAnswer(null);
       setIsCorrectAnswer(null);
@@ -71,6 +72,28 @@ const Quiz = () => {
     } catch (error) {
       console.error("Error posting answer:", error);
     }
+  };
+
+  const handleAddToCollection = () => {
+    if (quiz && quiz.question && quiz.correctAnswer) {
+      const newEntry = {
+        question: quiz.question,
+        answer: quiz.correctAnswer,
+      };
+      setSavedQuestions([...savedQuestions, newEntry]);
+    }
+  };
+
+  const handleExportCollection = () => {
+    const dataToExport = {
+      data: savedQuestions,
+    };
+    const jsonContent = JSON.stringify(dataToExport, null, 2);
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(jsonContent)}`;
+    const link = document.createElement('a');
+    link.href = jsonString;
+    link.download = 'questions.json';
+    link.click();
   };
 
   if (!username) {
@@ -127,6 +150,10 @@ const Quiz = () => {
               {answer}
             </button>
           ))}
+        </div>
+        <div className="collection-buttons">
+          <button onClick={handleAddToCollection}>Add to Collection</button>
+          <button onClick={handleExportCollection}>Export Collection</button>
         </div>
         <div className="score">
           {quiz.correctAnswers} / {quiz.totalAnswers}
