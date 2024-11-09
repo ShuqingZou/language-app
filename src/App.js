@@ -5,6 +5,7 @@ import Chat from './components/Chat';
 import Quiz from './components/Quiz';
 import ImportWords from './components/ImportWords';
 import Express from './components/Express';
+import Compare from './components/Compare'
 import './App.css';
 
 function App() {
@@ -17,6 +18,8 @@ function App() {
           <Link to="/quiz">Quiz</Link>
           <Link to="/importWords">Import</Link>
           <Link to="/express">Express</Link>
+          <Link to="/compare">Compare</Link>
+          
         </nav>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -24,6 +27,8 @@ function App() {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/importWords" element={<ImportWords />} />
           <Route path="/express" element={<Express />} />
+          <Route path="/compare" element={<Compare />} />
+
         </Routes>
       </div>
     </Router>
