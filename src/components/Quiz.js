@@ -12,12 +12,27 @@ const Quiz = () => {
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/quiz';
 
+  const shuffleArray = (array) => {
+    let shuffledArray = array.slice();
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+  };
+
   const fetchQuiz = async () => {
     if (!username) return;
     try {
       const data = { username };
       const response = await axios.post(apiUrl + '/getQuiz', data);
-      setQuiz(response.data);
+      const quizData = response.data;
+      
+      if (quizData.answers && quizData.answers.length > 0) {
+        quizData.answers = shuffleArray(quizData.answers);
+      }
+      
+      setQuiz(quizData);
       setSelectedAnswer(null);
       setIsCorrectAnswer(null);
     } catch (error) {
